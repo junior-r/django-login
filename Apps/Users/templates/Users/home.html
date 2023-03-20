@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Home</title>
+</head>
+<body>
+
+<!-- START NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">Login Django</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+                </li>
+            </ul>
+            <span class="navbar-text d-flex gap-4">
+                {% if not request.user.is_authenticated %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary">Inicia sesión</a>
+                    <a href="{% url 'sign_up' %}" class="btn btn-outline-secondary">Crea una cuenta</a>
+                {% else %}
+                    <a href="{% url 'logout' %}" class="btn btn-outline-danger">Cierra sesión</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</nav>
+<!-- END NAVBAR -->
+
+<div class="container">
+    {% if request.user.is_authenticated %}
+        <div class="card text-center mt-5">
+              <div class="card-header">
+                    BIENVENIDO
+              </div>
+              <div class="card-body">
+                    <h5 class="card-title">Estás Loggeado</h5>
+                    <p class="card-text">{{ request.user.get_full_name }}</p>
+                    <p class="card-text">{{ request.user.email }}</p>
+              </div>
+              <div class="card-footer text-muted">
+                  Último inicio de sesión:
+                  <span class="badge bg-info text-dark">{{ request.user.last_login.date }} - {{ request.user.last_login.time }}</span>
+              </div>
+        </div>
+    {% else %}
+        <div class="card text-center mt-5">
+              <div class="card-header">
+                    Hola extraño
+              </div>
+              <div class="card-body">
+                    <h5 class="card-title">Primero loggeate</h5>
+                    <p class="card-text">Puedes
+                        <a href="{% url 'login' %}">Iniciar sesión</a>
+                        o
+                        <a href="{% url 'sign_up' %}">Crear tu cuenta</a>
+                    </p>
+              </div>
+              <div class="card-footer text-muted">
+                  Hoy:
+                  <span class="badge bg-info text-dark">
+                    {{ now.now }}
+                  </span>
+              </div>
+        </div>
+    {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% if messages %}
+    {% for m in messages %}
+        {% if m.tags == 'error' %}
+            <script>
+                Swal.fire({
+                    'title': 'Error',
+                    'text': '{{ m }}',
+                    'icon': '{{ m.tags }}'
+                })
+            </script>
+        {% else %}
+            <script>
+                Swal.fire({
+                    'title': 'Éxito',
+                    'text': '{{ m }}',
+                    'icon': '{{ m.tags }}'
+
+                })
+            </script>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+</html>
